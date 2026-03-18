@@ -17,7 +17,7 @@
 
 <?php require 'partials/_navbar.php' ?>
 
-<main class="container">
+<main class="container py-4">
     <?= $contentFile ?>
 </main>
 

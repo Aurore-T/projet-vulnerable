@@ -14,6 +14,10 @@
                     <li class="nav-item">
                         <a class="nav-link active" aria-current="page" href="/">Home</a>
                     </li>
+
+                    <li class="nav-item">
+                        <a class="nav-link" aria-current="page" href="/product/new">New product</a>
+                    </li>
                 </ul>
             </div>
 

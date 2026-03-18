@@ -13,8 +13,8 @@ class App
          * @params $routes array<string, array<string, string>>
          */
         $routes = [
-            '/login' => [\App\Controller\AuthController::class, 'login'],
-            '/logout' => [\App\Controller\AuthController::class, 'logout'],
+            '/product/new' => [\App\Controller\ProductController::class, 'new'],
+            '/product/{slug}/{id}' => [\App\Controller\ProductController::class, 'show'],
             '/' => [\App\Controller\HomeController::class, 'index'],
         ];
 
@@ -24,6 +24,24 @@ class App
 
             (new $controllerClass())->$methodName();
             return;
+        }
+
+        // route dynamique
+        foreach ($routes ?? [] as $route => $target) {
+            // Transforme une route du type /user/{id} en regex /user/([^/]+)
+            $pattern = preg_replace('#\{[^/]+\}#', '([^/]+)', $route);
+            $pattern = "#^" . $pattern . "$#";
+
+            // Si l’URL correspond
+            if (preg_match($pattern, $path, $matches)) {
+                array_shift($matches); // retire l'URL complète
+
+                [$controllerClass, $action] = $target;
+
+                // Passe les paramètres au controller en appellant l'action
+                (new $controllerClass())->$action(...$matches);
+                return;
+            }
         }
 
         http_response_code(404);

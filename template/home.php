@@ -7,6 +7,11 @@
     </div>
 </div>
 
+<div>
+    <p>voici ma recherche :</p>
+    <p><?= $q ?></p>
+</div>
+
 <div class="d-flex gap-3">
     <?php foreach ($products as $product): ?>
         <div class="card" style="width: 18rem;">

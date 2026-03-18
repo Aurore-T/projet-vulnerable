@@ -9,11 +9,14 @@ class HomeController extends Controller
 {
     public function index(): void
     {
+        $q = isset($_GET['q']) ? $_GET['q'] : '';
+
         $productRepository = new ProductRepository();
         $products = $productRepository->findAll();
 
         $this->render('home', [
-            'products' => $products
+            'products' => $products,
+            'q' => $q
         ]);
     }
 }

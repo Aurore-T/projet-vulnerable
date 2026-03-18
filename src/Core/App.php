@@ -13,13 +13,9 @@ class App
          * @params $routes array<string, array<string, string>>
          */
         $routes = [
+            '/login' => [\App\Controller\AuthController::class, 'login'],
+            '/logout' => [\App\Controller\AuthController::class, 'logout'],
             '/' => [\App\Controller\HomeController::class, 'index'],
-            '/contact' => [\App\Controller\ContactController::class, 'contact'],
-            '/product' => [\App\Controller\ProductController::class, 'index'],
-            '/product/new' => [\App\Controller\ProductController::class, 'new'],
-            '/product/{id}/edit' => [\App\Controller\ProductController::class, 'edit'],
-            '/product/{slug}/{id}' => [\App\Controller\ProductController::class, 'show'],
-            '/product/{id}/delete' => [\App\Controller\ProductController::class, 'delete']
         ];
 
         // route statique
@@ -28,24 +24,6 @@ class App
 
             (new $controllerClass())->$methodName();
             return;
-        }
-
-        // route dynamique
-        foreach ($routes ?? [] as $route => $target) {
-            // Transforme une route du type /user/{id} en regex /user/([^/]+)
-            $pattern = preg_replace('#\{[^/]+\}#', '([^/]+)', $route);
-            $pattern = "#^" . $pattern . "$#";
-
-            // Si l’URL correspond
-            if (preg_match($pattern, $path, $matches)) {
-                array_shift($matches); // retire l'URL complète
-
-                [$controllerClass, $action] = $target;
-
-                // Passe les paramètres au controller en appellant l'action
-                (new $controllerClass())->$action(...$matches);
-                return;
-            }
         }
 
         http_response_code(404);

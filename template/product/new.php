@@ -4,7 +4,8 @@
 
     <div>
         <label for="picture">Image</label>
-        <input id="picture" type="file" name="picture" placeholder="Choisissez une image" accept="image/*">
+        <input id="picture" type="file" name="picture" placeholder="Choisissez une image">
+        <!-- add attribut : accept="image/*" -->
     </div>
 
     <div>
@@ -19,7 +20,8 @@
 
     <div>
         <label for="description">Description</label>
-        <textarea name="description" id="description" cols="30" rows="10" placeholder="Saisissez une description" style="resize: none;" required></textarea>
+        <textarea name="description" id="description" cols="30" rows="10" placeholder="Saisissez une description"
+                  style="resize: none;" required></textarea>
     </div>
 
     <button type="submit" class="btn btn-primary">Créer</button>

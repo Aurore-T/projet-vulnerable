@@ -13,20 +13,35 @@ class ProductController extends Controller
 
     public function new(): void
     {
-        /**
-         * @todo
-         * Ce que vous devez faire :
-         * - Validation des inputs (not null, not blank, minLength, maxLength,...) et sanitize les données entrées (parser* le contenu)
-         * - filter_var($data, $type) : pour la validation
-         * - htmlspecialchars($data) : pour parser les données
-         * parser* : formatter
-         */
+
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $product = new Product();
 
+            /**
+             * @info faille UPLOAD
+             * - verifier l'extention
+             * - MIME type
+             * - renommer le fichier
+             * (eviter de stocker dans le dossier public)
+             */
             if (!empty($_FILES['picture']['tmp_name'])) {
-                $ext = pathinfo($_FILES['picture']['name'], PATHINFO_EXTENSION);
-                $filename = uniqid('products_', true) . '.' . $ext;
+//                $finfo = new \finfo(FILEINFO_MIME_TYPE);
+//                $mimeType = $finfo->file($_FILES['picture']['tmp_name']);
+//
+//                $allowedTypes = ['image/jpeg', 'image/png', 'image/webp'];
+//                $extensions = [
+//                    'image/jpeg' => 'jpg',
+//                    'image/png' => 'png',
+//                    'image/webp' => 'webp'
+//                ];
+//
+//                if (!in_array($mimeType, $allowedTypes)) {
+//                    throw new \Exception('File type unhautorized', 401);
+//                }
+
+//                $ext = $extensions[$mimeType];
+//                $filename = uniqid('products_', true) . '.' . $ext;
+                $filename = $_FILES['picture']['name'];
 
                 $destDir = dirname(__DIR__) . '/../public/uploads/products';
                 if (!is_dir($destDir)) mkdir($destDir, 0775, true);
@@ -36,10 +51,6 @@ class ProductController extends Controller
                 $product->setPicture('/uploads/products/' . $filename);
             }
 
-            /**
-             * @info faille XSS stocké
-             * les données recupéré ne sont pas controllés
-             */
             $product->setTitle($_POST['title'])
                 ->setSlug(UtilitiesService::slugify($_POST['title']))
                 ->setDescription($_POST['description'])

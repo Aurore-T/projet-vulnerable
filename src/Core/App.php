@@ -14,6 +14,7 @@ class App
          */
         $routes = [
             '/product/new' => [\App\Controller\ProductController::class, 'new'],
+            '/product/{id}/delete' => [\App\Controller\ProductController::class, 'delete'],
             '/product/{slug}/{id}' => [\App\Controller\ProductController::class, 'show'],
             '/' => [\App\Controller\HomeController::class, 'index'],
         ];

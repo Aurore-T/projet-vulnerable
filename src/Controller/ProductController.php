@@ -61,7 +61,7 @@ class ProductController extends Controller
         $product = $productRepository->findById($id) ?: $productRepository->findBySlug($slug);
 
         if (!$product) {
-            throw new \Exception('Product not found');
+            throw new \Exception('Product not found', 404);
         }
 
         if ($product->getSlug() !== $slug || $product->getId() !== $id) {
@@ -71,5 +71,40 @@ class ProductController extends Controller
         $this->render('product/show', [
             'product' => $product
         ]);
+    }
+
+    public function delete(int $id): void
+    {
+        if (session_status() === PHP_SESSION_NONE) {
+            session_start();
+        }
+
+        /**
+         * @todo
+         * Faire une page html :
+         *  - ajouter un form action="/product/id/delete" method="post"
+         *  - et regarder ce que ca fait
+         *
+         * Ce que vous devez faire :
+         * Dans votre condition :
+         *  - Verifier si le $_POST['csrf_token'] === $_SESSION['csrf_token']
+         *  - si c'est vrai alors on supprime
+         * - sinon on retourne:
+         *  - $_SESSION['error'] = "Invalid CSRF token";
+         *  - $this->redirect("/product/{$product->getSlug()}/{$product->getId()}");
+         */
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            $productRepository = new ProductRepository();
+            $product = $productRepository->findById($id);
+
+            if (!$product) {
+                throw new \Exception('Product not found', 404);
+            }
+
+            $entityManager = new EntityManager();
+            $entityManager->delete($product);
+
+            $this->redirect('/');
+        }
     }
 }

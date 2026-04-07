@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Core\Controller;
+use App\Repository\UserRepository;
 
 class AuthController extends Controller
 {
@@ -13,20 +14,6 @@ class AuthController extends Controller
      * Toujours utiliser : PDO, ORM et les requêtes préparés (voir dans le UserRepository)
      *
      * */
-    public function __construct()
-    {
-        $username = 'formation';
-        $password = 'paris';
-        $host = '127.0.0.1';
-        $port = 3306;
-        $dbname = 'php_poo';
-
-        $this->conn = mysqli_connect($host, $username, $password, $dbname, $port);
-
-        if (!$this->conn) {
-            die('Connection failed: ' . mysqli_connect_error());
-        }
-    }
 
     public function login(): void
     {
@@ -37,6 +24,7 @@ class AuthController extends Controller
         if (isset($_SESSION['connected'])) {
             $this->redirect('/');
         }
+
 
         /**
          * @todo
@@ -52,14 +40,20 @@ class AuthController extends Controller
             $email = $_POST['email'];
             $password = $_POST['password'];
 
+            $userRepository = new UserRepository();
+            $users = $userRepository->findbyEmail($email);
+
+            if (!$users) {
+                throw new \Exception("User not found", 404);
+            }
+
             /**
              * @info
              * "' OR 1=1 -- ": la chaine suivante ajoute une condition qui est toujours vrai et commente la suite de la query.
              * */
-            $query = "SELECT * FROM `user` WHERE email='$email' AND password='$password'";
-            $result = $this->conn->query($query);
 
-            if ($result && mysqli_num_rows($result) > 0) {
+
+            if (password_verify($password, $users->getPassword())) {
                 if (session_status() === PHP_SESSION_NONE) {
                     session_start();
                 }
